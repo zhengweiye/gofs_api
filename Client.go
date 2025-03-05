@@ -1,0 +1,60 @@
+package gofs_api
+
+import "sync"
+
+type Client struct {
+	http        string
+	ip          string
+	port        int
+	contextPath string
+}
+
+var clientObj *Client
+var clientOnce sync.Once
+
+type Option struct {
+	Http        string
+	Ip          string
+	Port        int
+	ContextPath string
+}
+
+func Create(opt Option) *Client {
+	clientOnce.Do(func() {
+		clientObj = &Client{
+			http:        opt.Http,
+			ip:          opt.Ip,
+			port:        opt.Port,
+			contextPath: opt.ContextPath,
+		}
+	})
+	return clientObj
+}
+
+func (c *Client) GetAppService() AppService {
+	return newAppService(c)
+}
+
+func (c *Client) GetBucketService() BucketService {
+	return newBucketService(c)
+}
+
+func (c *Client) GetDustbinService() DustbinService {
+	return newDustbinService(c)
+}
+
+func (c *Client) GetEnvService() EnvService {
+	return newEnvService(c)
+}
+
+func (c *Client) GetFileBedService() FileBedService {
+	return newFileBedService(c)
+}
+
+func (c *Client) GetFileManageService() FileManageService {
+	return newFileManageService(c)
+}
+
+func (c *Client) GetStorageService() StorageService {
+	return newStorageService(c)
+}
