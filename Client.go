@@ -1,16 +1,11 @@
 package gofs_api
 
-import "sync"
-
 type Client struct {
 	http        string
 	ip          string
 	port        int
 	contextPath string
 }
-
-var clientObj *Client
-var clientOnce sync.Once
 
 type Option struct {
 	Http        string
@@ -20,15 +15,12 @@ type Option struct {
 }
 
 func Create(opt Option) *Client {
-	clientOnce.Do(func() {
-		clientObj = &Client{
-			http:        opt.Http,
-			ip:          opt.Ip,
-			port:        opt.Port,
-			contextPath: opt.ContextPath,
-		}
-	})
-	return clientObj
+	return &Client{
+		http:        opt.Http,
+		ip:          opt.Ip,
+		port:        opt.Port,
+		contextPath: opt.ContextPath,
+	}
 }
 
 func (c *Client) GetAppService() AppService {
