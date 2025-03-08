@@ -5,7 +5,7 @@ type StorageService interface {
 	GetList(token string) (list []Select)
 	GetUpdateData(token, id string) (storage StorageVo)
 	Insert(token, name string, isDefault bool, nginxDomain, nginxPrefix, ip string, port int, loginAccount, loginPwd, volumes string, sortNum int)
-	Update(token, id, name string, isDefault bool, nginxDomain, nginxPrefix, ip string, port int, loginAccount, loginPwd, volumes string, sortNum int)
+	Update(token, id, name string, isDefault bool, nginxDomain, nginxPrefix, ip string, port int, loginAccount, volumes string, sortNum int)
 	Delete(token, id string)
 	UpdatePwd(token, id, loginPwd string)
 }
@@ -84,7 +84,7 @@ func (s StorageServiceImpl) Insert(token, name string, isDefault bool, nginxDoma
 	return
 }
 
-func (s StorageServiceImpl) Update(token, id, name string, isDefault bool, nginxDomain, nginxPrefix, ip string, port int, loginAccount, loginPwd, volumes string, sortNum int) {
+func (s StorageServiceImpl) Update(token, id, name string, isDefault bool, nginxDomain, nginxPrefix, ip string, port int, loginAccount, volumes string, sortNum int) {
 	result, err := httpPost[any](s.client, "storage/update", token, map[string]any{
 		"id":           id,
 		"name":         name,
@@ -94,7 +94,6 @@ func (s StorageServiceImpl) Update(token, id, name string, isDefault bool, nginx
 		"ip":           ip,
 		"port":         port,
 		"loginAccount": loginAccount,
-		"loginPwd":     loginPwd,
 		"volumes":      volumes,
 		"sortNum":      sortNum,
 	})
