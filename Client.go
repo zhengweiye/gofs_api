@@ -23,6 +23,10 @@ func Create(opt Option) *Client {
 	}
 }
 
+func (c *Client) GetLoginService() LoginService {
+	return newLoginService(c)
+}
+
 func (c *Client) GetAppService() AppService {
 	return newAppService(c)
 }

@@ -109,8 +109,9 @@ func upload[T any](client *Client, methodPath, token string, fileBytes []byte, f
 
 	// 设置Content-Type
 	req.Header.Set("Content-Type", w.FormDataContentType())
-	req.Header.Set("Authorization", token)
-
+	if len(token) > 0 {
+		req.Header.Set("Authorization", token)
+	}
 	// 发送请求
 	resp, err := httpClient.Do(req)
 	if err != nil {
@@ -163,7 +164,9 @@ func httpPost[T any](client *Client, methodPath, token string, param any) (data 
 		return
 	}
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", token)
+	if len(token) > 0 {
+		request.Header.Set("Authorization", token)
+	}
 	resp, err := httpClient.Do(request)
 	if err != nil {
 		return
