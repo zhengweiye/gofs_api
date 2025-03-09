@@ -90,8 +90,8 @@ func (f FileBedServiceImpl) Delete(token, id string) {
 
 func (f FileBedServiceImpl) Upload(token, pid, fileName string, data []byte) {
 	result, err := upload[any](f.client, "fileBed/upload", token, data, fileName, map[string]string{
-		"pid":      pid,
-		"fileName": fileName,
+		"parentDir": pid,
+		"fileName":  fileName,
 	})
 	if err != nil {
 		panic(err)
