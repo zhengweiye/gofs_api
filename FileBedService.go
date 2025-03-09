@@ -20,7 +20,9 @@ func newFileBedService(c *Client) FileBedService {
 }
 
 func (f FileBedServiceImpl) GetList(token, parentId string) (list []FileBedVo) {
-	result, err := httpPost[[]FileBedVo](f.client, "fileBed/getList", token, map[string]any{})
+	result, err := httpPost[[]FileBedVo](f.client, "fileBed/getList", token, map[string]any{
+		"parentId": parentId,
+	})
 	if err != nil {
 		panic(err)
 	}
