@@ -1,35 +1,37 @@
 package gofs_api
 
+import "errors"
+
 type AppService interface {
 	/**
 	 * 分页
 	 */
-	GetPageList(token string, curPage, pageSize int, name string) (pageData PageData[AppVo])
+	GetPageList(token string, curPage, pageSize int, name string) (pageData PageData[AppVo], err error)
 
 	/**
 	 * 下拉框
 	 */
-	GetList(token string) (list []Select)
+	GetList(token string) (list []Select, err error)
 
 	/**
 	 * 修改--回显
 	 */
-	GetUpdateData(token, id string) (app AppVo)
+	GetUpdateData(token, id string) (app AppVo, err error)
 
 	/**
 	 * 新增
 	 */
-	Insert(token, name, appKey, appSecret string, sortNum int)
+	Insert(token, name, appKey, appSecret string, sortNum int) (err error)
 
 	/**
 	 * 修改--保存
 	 */
-	Update(token, id, name, appKey, appSecret string, sortNum int)
+	Update(token, id, name, appKey, appSecret string, sortNum int) (err error)
 
 	/**
 	 * 删除
 	 */
-	Delete(token, id string)
+	Delete(token, id string) (err error)
 }
 
 type AppServiceImpl struct {
@@ -42,7 +44,7 @@ func newAppService(c *Client) AppService {
 	}
 }
 
-func (a AppServiceImpl) GetPageList(token string, curPage, pageSize int, name string) (pageData PageData[AppVo]) {
+func (a AppServiceImpl) GetPageList(token string, curPage, pageSize int, name string) (pageData PageData[AppVo], err error) {
 	result, err := httpPost[PageData[AppVo]](a.client, "app/getPageList", token, map[string]any{
 		"curPage":  curPage,
 		"pageSize": pageSize,
@@ -58,33 +60,35 @@ func (a AppServiceImpl) GetPageList(token string, curPage, pageSize int, name st
 	return
 }
 
-func (a AppServiceImpl) GetList(token string) (list []Select) {
+func (a AppServiceImpl) GetList(token string) (list []Select, err error) {
 	result, err := httpPost[[]Select](a.client, "app/getList", token, map[string]any{})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	list = result.Data
 	return
 }
 
-func (a AppServiceImpl) GetUpdateData(token, id string) (app AppVo) {
+func (a AppServiceImpl) GetUpdateData(token, id string) (app AppVo, err error) {
 	result, err := httpPost[AppVo](a.client, "app/getUpdateData", token, map[string]any{
 		"id": id,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	app = result.Data
 	return
 }
 
-func (a AppServiceImpl) Insert(token, name, appKey, appSecret string, sortNum int) {
+func (a AppServiceImpl) Insert(token, name, appKey, appSecret string, sortNum int) (err error) {
 	result, err := httpPost[any](a.client, "app/insert", token, map[string]any{
 		"name":      name,
 		"appKey":    appKey,
@@ -92,15 +96,16 @@ func (a AppServiceImpl) Insert(token, name, appKey, appSecret string, sortNum in
 		"sortNum":   sortNum,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	return
 }
 
-func (a AppServiceImpl) Update(token, id, name, appKey, appSecret string, sortNum int) {
+func (a AppServiceImpl) Update(token, id, name, appKey, appSecret string, sortNum int) (err error) {
 	result, err := httpPost[any](a.client, "app/update", token, map[string]any{
 		"id":        id,
 		"name":      name,
@@ -109,23 +114,25 @@ func (a AppServiceImpl) Update(token, id, name, appKey, appSecret string, sortNu
 		"sortNum":   sortNum,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	return
 }
 
-func (a AppServiceImpl) Delete(token, id string) {
+func (a AppServiceImpl) Delete(token, id string) (err error) {
 	result, err := httpPost[any](a.client, "app/delete", token, map[string]any{
 		"id": id,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	return
 }

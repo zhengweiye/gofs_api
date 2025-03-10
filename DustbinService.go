@@ -1,8 +1,10 @@
 package gofs_api
 
+import "errors"
+
 type DustbinService interface {
-	GetPageList(token string, curPage, pageSize int, storeId, fileName string) (pageData PageData[DustbinListVo])
-	Delete(token, id string)
+	GetPageList(token string, curPage, pageSize int, storeId, fileName string) (pageData PageData[DustbinListVo], err error)
+	Delete(token, id string) (err error)
 }
 
 type DustbinServiceImpl struct {
@@ -15,7 +17,7 @@ func newDustbinService(c *Client) DustbinService {
 	}
 }
 
-func (d DustbinServiceImpl) GetPageList(token string, curPage, pageSize int, storeId, fileName string) (pageData PageData[DustbinListVo]) {
+func (d DustbinServiceImpl) GetPageList(token string, curPage, pageSize int, storeId, fileName string) (pageData PageData[DustbinListVo], err error) {
 	result, err := httpPost[PageData[DustbinListVo]](d.client, "fileDustbin/getPageList", token, map[string]any{
 		"curPage":  curPage,
 		"pageSize": pageSize,
@@ -23,24 +25,26 @@ func (d DustbinServiceImpl) GetPageList(token string, curPage, pageSize int, sto
 		"fileName": fileName,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	pageData = result.Data
 	return
 }
 
-func (d DustbinServiceImpl) Delete(token, id string) {
+func (d DustbinServiceImpl) Delete(token, id string) (err error) {
 	result, err := httpPost[any](d.client, "fileDustbin/delete", token, map[string]any{
 		"id": id,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	return
 }

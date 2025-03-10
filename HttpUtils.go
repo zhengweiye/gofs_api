@@ -31,6 +31,12 @@ var httpClient = &http.Client{
 }
 
 func download(client *Client, methodPath string, param any) (data []byte, err error) {
+	defer func() {
+		if err2 := recover(); err2 != nil {
+			err = fmt.Errorf("%v", err2)
+		}
+	}()
+
 	var body *bytes.Reader
 	if param == nil {
 		param = make(map[string]any)
@@ -76,6 +82,12 @@ func download(client *Client, methodPath string, param any) (data []byte, err er
 }
 
 func upload[T any](client *Client, methodPath, token string, fileBytes []byte, fileName string, param map[string]string) (data Result[T], err error) {
+	defer func() {
+		if err2 := recover(); err2 != nil {
+			err = fmt.Errorf("%v", err2)
+		}
+	}()
+
 	// 创建一个新的multipart编写器
 	var buffer bytes.Buffer
 	w := multipart.NewWriter(&buffer)
@@ -149,6 +161,11 @@ func upload[T any](client *Client, methodPath, token string, fileBytes []byte, f
 }
 
 func httpPost[T any](client *Client, methodPath, token string, param any) (data Result[T], err error) {
+	defer func() {
+		if err2 := recover(); err2 != nil {
+			err = fmt.Errorf("%v", err2)
+		}
+	}()
 	var body *bytes.Reader
 	if param == nil {
 		param = make(map[string]any)
