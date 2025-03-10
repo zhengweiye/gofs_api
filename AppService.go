@@ -51,10 +51,11 @@ func (a AppServiceImpl) GetPageList(token string, curPage, pageSize int, name st
 		"name":     name,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	pageData = result.Data
 	return

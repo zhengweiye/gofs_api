@@ -1,8 +1,10 @@
 package gofs_api
 
+import "errors"
+
 type LoginService interface {
-	Login(loginAccount, loginPassword string) (login LoginVo)
-	Logout(token string)
+	Login(loginAccount, loginPassword string) (login LoginVo, err error)
+	Logout(token string) (err error)
 }
 
 type LoginServiceImpl struct {
@@ -15,30 +17,32 @@ func newLoginService(c *Client) LoginService {
 	}
 }
 
-func (l LoginServiceImpl) Login(loginAccount, loginPassword string) (login LoginVo) {
+func (l LoginServiceImpl) Login(loginAccount, loginPassword string) (login LoginVo, err error) {
 	result, err := httpPost[LoginVo](l.client, "login", "", map[string]any{
 		"loginAccount":  loginAccount,
 		"loginPassword": loginPassword,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	login = result.Data
 	return
 }
 
-func (l LoginServiceImpl) Logout(token string) {
+func (l LoginServiceImpl) Logout(token string) (err error) {
 	result, err := httpPost[any](l.client, "logout", token, map[string]any{
 		"token": token,
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if result.Code != 200 {
-		panic(result.Msg)
+		err = errors.New(result.Msg)
+		return
 	}
 	return
 }

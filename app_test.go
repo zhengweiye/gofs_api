@@ -14,7 +14,7 @@ func Test_App_GetList(t *testing.T) {
 		Port:        443,
 		ContextPath: "gofs",
 	})
-	list := client.GetAppService().GetList(token)
+	list, _ := client.GetAppService().GetList(token)
 	fmt.Println(list)
 }
 
@@ -25,6 +25,6 @@ func Test_App_GetPageList(t *testing.T) {
 		Port:        443,
 		ContextPath: "gofs",
 	})
-	pageData := client.GetAppService().GetPageList(token, 1, 10, "")
+	pageData, _ := client.GetAppService().GetPageList(token, 1, 10, "")
 	fmt.Printf("%v\n", pageData)
 }
