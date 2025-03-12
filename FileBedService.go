@@ -83,7 +83,7 @@ func (f FileBedServiceImpl) Move(token, fileId, pid string) (err error) {
 
 func (f FileBedServiceImpl) Delete(token, id string) (err error) {
 	result, err := httpPost[any](f.client, "fileBed/delete", token, map[string]any{
-		"id": id,
+		"fileId": id,
 	})
 	if err != nil {
 		return
