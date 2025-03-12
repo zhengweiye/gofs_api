@@ -4,7 +4,7 @@ import "errors"
 
 type DustbinService interface {
 	GetPageList(token string, curPage, pageSize int, storeId, fileName string) (pageData PageData[DustbinListVo], err error)
-	Delete(token, id string) (err error)
+	Delete(token string, ids []string) (err error)
 }
 
 type DustbinServiceImpl struct {
@@ -35,9 +35,9 @@ func (d DustbinServiceImpl) GetPageList(token string, curPage, pageSize int, sto
 	return
 }
 
-func (d DustbinServiceImpl) Delete(token, id string) (err error) {
+func (d DustbinServiceImpl) Delete(token string, ids []string) (err error) {
 	result, err := httpPost[any](d.client, "fileDustbin/delete", token, map[string]any{
-		"id": id,
+		"ids": ids,
 	})
 	if err != nil {
 		return
